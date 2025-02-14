@@ -1,0 +1,15 @@
+CREATE TABLE mt_employee (
+    employee_code SERIAL PRIMARY KEY,
+    employee_name VARCHAR(255) NOT NULL,
+    employee_age INT CHECK (employee_age > 0),
+    date_of_birth DATE NOT NULL
+);
+INSERT into Mt_employee (employee_name, employee_age, date_of_birth) 
+VALUES 
+    ('John Doe', 30, '1994-05-15'),
+    ('Jane Smith', 25, '1999-08-22'),
+    ('Robert Johnson', 40, '1984-02-10'),
+    ('Emily Davis', 35, '1989-11-05'),
+    ('Michael Brown', 28, '1996-07-19');
+
+select * from Mt_employee;
