@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<head>
+    <title>Employee List</title>
+</head>
+<body>
+    <h1>Employee List</h1>
+
+    <h:dataTable value="#{employeeBean.employees}" var="emp" border="1">
+        <h:column>
+            <f:facet name="header">Employee Code</f:facet>
+            #{emp.code}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Name</f:facet>
+            #{emp.name}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Age</f:facet>
+            #{emp.age}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Date of Birth</f:facet>
+            #{emp.dob}
+        </h:column>
+    </h:dataTable>
+</body>
+</html>

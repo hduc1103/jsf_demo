@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<head>
+    <title>Add Employee</title>
+</head>
+<body>
+
+    <h2>Add New Employee</h2>
+
+    <h:form>
+        <h:outputLabel for="code" value="Employee Code:" />
+        <h:inputText id="code" value="#{employeeBean.employee.code}" required="true"/>
+        <br/>
+
+        <h:outputLabel for="name" value="Name:" />
+        <h:inputText id="name" value="#{employeeBean.employee.name}" required="true"/>
+        <br/>
+
+        <h:outputLabel for="age" value="Age:" />
+        <h:inputText id="age" value="#{employeeBean.employee.age}" required="true"/>
+        <br/>
+
+        <h:outputLabel for="dob" value="Date of Birth:" />
+        <h:inputText id="dob" value="#{employeeBean.employee.dob}" required="true"/>
+        <br/>
+
+        <h:commandButton value="Save" action="#{employeeBean.addEmployee}"/>
+        <h:commandButton value="Back to List" action="employeeList.xhtml"/>
+    </h:form>
+
+</body>
+</html>

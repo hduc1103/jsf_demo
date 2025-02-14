@@ -1,0 +1,49 @@
+package bean;
+
+import javax.inject.Named;
+
+import model.Employee;
+import util.DatabaseUtil;
+
+import javax.enterprise.context.SessionScoped;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+@Named
+@SessionScoped
+public class EmployeeBean implements Serializable {
+    private List<Employee> employees;
+
+    public List<Employee> getEmployees() {
+        if (employees == null) {
+            employees = fetchEmployees();
+        }
+        return employees;
+    }
+
+    private List<Employee> fetchEmployees() {
+        List<Employee> list = new ArrayList<>();
+        String sql = "SELECT employee_code, employee_name, employee_age, date_of_birth FROM Mt_employee";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Employee emp = new Employee();
+                emp.setCode(rs.getInt("employee_code"));
+                emp.setName(rs.getString("employee_name"));
+                emp.setAge(rs.getInt("employee_age"));
+                emp.setDob(rs.getDate("date_of_birth").toLocalDate());
+                list.add(emp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+}

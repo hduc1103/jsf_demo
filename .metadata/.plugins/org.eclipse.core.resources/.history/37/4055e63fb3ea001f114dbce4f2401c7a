@@ -1,0 +1,59 @@
+package repository.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.Date;
+import java.util.List;
+
+import model.Employee;
+import repository.EmployeeRepository;
+import util.DatabaseUtil;
+
+public class EmployeeRepositoryImpl implements EmployeeRepository {
+	@Override
+	public void addEmployee(Employee employee) {
+	    String sql = "INSERT INTO Mt_employee (employee_code, employee_name, employee_age, date_of_birth) VALUES (?, ?, ?, ?)";
+
+	    try (Connection conn = DatabaseUtil.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setInt(1, employee.getCode());
+	        stmt.setString(2, employee.getName());
+	        stmt.setInt(3, employee.getAge());
+	        stmt.setDate(4, java.sql.Date.valueOf(employee.getDob()));
+
+	        int rowsInserted = stmt.executeUpdate();
+	        if (rowsInserted > 0) {
+	            System.out.println("Employee added successfully!");
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	@Override
+	public void updateEmployee(Employee employee) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteEmployee(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Employee> getAllEmployees() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Employee getEmployeeById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
