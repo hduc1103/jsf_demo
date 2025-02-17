@@ -1,38 +1,94 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">  
-<head>
-    <title>Employee List</title>
-</head>
-<body>
-    <h1>Employee List</h1>
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
 
-    <h:dataTable value="#{employeeBean.employees}" var="emp" border="1">
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Employee Code"/>
-            </f:facet>
-            <h:outputText value="#{emp.code}"/>
-        </h:column>
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Name"/>
-            </f:facet>
-            <h:outputText value="#{emp.name}"/>
-        </h:column>
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Age"/>
-            </f:facet>
-            <h:outputText value="#{emp.age}"/>
-        </h:column>
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Date of Birth"/>
-            </f:facet>
-            <h:outputText value="#{emp.dob}"/>
-        </h:column>
-    </h:dataTable>
-</body>
+<h:head>
+	<title>Employee List</title>
+</h:head>
+
+<h:body>
+	<h1>Employee List</h1>
+	<h:form id="employeeForm">
+		<h:dataTable id="employeeTable" value="#{employeeBean.employees}"
+			var="emp" border="3"
+			style="width: 100%; border-collapse: collapse; text-align: left;">
+
+			<h:column style="width: 10%;">
+				<f:facet name="header">
+					<h:outputText value="Employee Code" />
+				</f:facet>
+				<h:outputText value="#{emp.code}" />
+			</h:column>
+
+			<h:column style="width: 40%;">
+				<f:facet name="header">
+					<h:outputText value="Name" />
+				</f:facet>
+				<h:outputText value="#{emp.name}" />
+			</h:column>
+
+			<h:column style="width: 10%;">
+				<f:facet name="header">
+					<h:outputText value="Age" />
+				</f:facet>
+				<h:outputText value="#{emp.age}" />
+			</h:column>
+
+			<h:column style="width: 20%;">
+				<f:facet name="header">
+					<h:outputText value="Date of Birth" />
+				</f:facet>
+				<h:outputText value="#{emp.dob}" />
+			</h:column>
+			<h:column style="width: 10%;">
+				<f:facet name="header">
+					<h:outputText value="Actions" />
+				</f:facet>
+				<h:commandButton value="Delete"
+					action="#{employeeBean.deleteEmployee(emp.code)}"
+					style="color: red;"/>
+			</h:column>
+			<h:column style="width: 10%;">
+				<f:facet name="header">
+					<h:outputText value="Actions" />
+				</f:facet>
+				<h:commandButton value="Update"
+					action="#{employeeBean.updateEmployee()}"
+					style="color: blue;"/>
+			</h:column>
+		</h:dataTable>
+	</h:form>
+
+	<h:messages globalOnly="true" style="color:red;" />
+
+	<h2>Add New Employee</h2>
+	<h:form>
+		<h:panelGrid columns="2">
+
+			<h:outputLabel for="code" value="Code:" />
+			<h:inputText id="code" value="#{employeeBean.newEmployee.code}"
+				required="true" />
+
+			<h:outputLabel for="name" value="Name:" />
+			<h:inputText id="name" value="#{employeeBean.newEmployee.name}"
+				required="true" />
+
+			<h:outputLabel for="age" value="Age:" />
+			<h:inputText id="age" value="#{employeeBean.newEmployee.age}"
+				required="true" />
+
+			<h:outputLabel for="dob" value="Date of Birth:" />
+			<h:inputText id="dob" value="#{employeeBean.newEmployee.dob}"
+				required="true">
+				<f:converter converterId="localDateConverter" />
+			</h:inputText>
+
+			<h:commandButton value="Add Employee"
+				action="#{employeeBean.addEmployee}" />
+		</h:panelGrid>
+	</h:form>
+
+</h:body>
+
 </html>

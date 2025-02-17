@@ -6,7 +6,8 @@ import model.Employee;
 
 public interface EmployeeService {
     void addEmployee(Employee employee);
-    void deleteEmployee(Employee employee);
+    void deleteEmployee(String code);
     void updateEmployee(Employee employee);
     List<Employee> getAllEmployees();
+    Employee searchByCode(String code);
 }

@@ -2,12 +2,16 @@ package service.impl;
 
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import model.Employee;
-import repository.EmployeeDAO;
+import dao.EmployeeDAO;
 import service.EmployeeService;
 
+@Named("employeeService")
+@ApplicationScoped
 public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Inject
@@ -15,26 +19,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Override
 	public void addEmployee(Employee employee) {
-		
 		employeeDAO.addEmployee(employee);
 	}
 
 	@Override
-	public void deleteEmployee(Employee employee) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateEmployee(Employee employee) {
-		// TODO Auto-generated method stub
-		
+	public void deleteEmployee(String code) {
+		employeeDAO.deleteEmployee(code);
 	}
 
 	@Override
 	public List<Employee> getAllEmployees() {
-		// TODO Auto-generated method stub
-		return null;
+		return employeeDAO.getAllEmployees();
+	}
+
+	@Override
+	public void updateEmployee(Employee newEmployeeData) {
+		employeeDAO.updateEmployee(newEmployeeData);
+	}
+
+	@Override
+	public Employee searchByCode(String code) {
+		Employee employee = employeeDAO.getEmployeeByCode(code);
+		return employee;
 	}
 
 }

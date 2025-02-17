@@ -3,11 +3,11 @@ package model;
 import java.time.LocalDate;
 
 public class Employee {
-	 	private int code;
+	 	private String code;
 	    private String name;
 	    private int age;
 	    private LocalDate dob;
-		public Employee(int code, String name, int age, LocalDate dob) {
+		public Employee(String code, String name, int age, LocalDate dob) {
 			super();
 			this.code = code;
 			this.name = name;
@@ -16,10 +16,10 @@ public class Employee {
 		}
 		public Employee() {
 		}
-		public int getCode() {
+		public String getCode() {
 			return code;
 		}
-		public void setCode(int code) {
+		public void setCode(String code) {
 			this.code = code;
 		}
 		public String getName() {

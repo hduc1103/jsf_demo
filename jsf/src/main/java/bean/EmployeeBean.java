@@ -1,79 +1,67 @@
 package bean;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+
+import exception.EmployeeException;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import model.Employee;
-import util.DatabaseUtil;
+import service.EmployeeService;
 
-@Named
+@Named("employeeBean")
 @SessionScoped
 public class EmployeeBean implements Serializable {
-    private List<Employee> employees;
-    private Employee employee = new Employee(); // For form input
+	private static final long serialVersionUID = 1L;
+	private List<Employee> employees;
+    private Employee newEmployee;
+    
+    @Inject
+    private EmployeeService employeeService;
 
-    // Load employees when the bean is created
     @PostConstruct
     public void init() {
-        employees = getAllEmployees();
+        employees = employeeService.getAllEmployees();
+        newEmployee = new Employee(); 
     }
 
     public List<Employee> getEmployees() {
         return employees;
     }
 
-    public Employee getEmployee() {
-        return employee;
+    public Employee getNewEmployee() {
+        return newEmployee;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setNewEmployee(Employee newEmployee) {
+        this.newEmployee = newEmployee;
     }
-
-    public List<Employee> getAllEmployees() {
-        List<Employee> empList = new ArrayList<>();
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Mt_employee");
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                empList.add(new Employee(
-                        rs.getInt("employee_code"),
-                        rs.getString("employee_name"),
-                        rs.getInt("employee_age"),
-                        rs.getDate("date_of_birth").toLocalDate()
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+ 
+    public void addEmployee() {
+        try {
+            employeeService.addEmployee(newEmployee);
+            employees = employeeService.getAllEmployees(); 
+            newEmployee = new Employee(); 
+        } catch (EmployeeException e) {
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
         }
-        return empList;
     }
 
-    public String addEmployee() {
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "INSERT INTO Mt_employee (employee_code, employee_name, employee_age, date_of_birth) VALUES (?, ?, ?, ?)")) {
-
-            stmt.setInt(1, employee.getCode());
-            stmt.setString(2, employee.getName());
-            stmt.setInt(3, employee.getAge());
-            stmt.setDate(4, java.sql.Date.valueOf(employee.getDob()));
-
-            int rowsInserted = stmt.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Employee added successfully!");
-                employees.add(new Employee(employee.getCode(), employee.getName(), employee.getAge(), employee.getDob()));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "employeeList"; // Navigate back to the list page
+    public void deleteEmployee(String code) { 
+        employeeService.deleteEmployee(code);
+        employees = employeeService.getAllEmployees();
     }
+    
+    public String updateEmployee() {
+//    	employeeService.updateEmployee(newEmployeeData);
+    	return "update";
+    }
+    
 }

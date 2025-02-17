@@ -1,4 +1,4 @@
-package repository;
+package dao;
 
 import java.util.List;
 
@@ -9,9 +9,10 @@ public interface EmployeeDAO {
 
 	void updateEmployee(Employee employee);
 
-	void deleteEmployee(int id);
+	void deleteEmployee(String code);
 
 	List<Employee> getAllEmployees();
 
-	Employee getEmployeeById(int id);
+	Employee getEmployeeByCode(String code);
+	
 }
