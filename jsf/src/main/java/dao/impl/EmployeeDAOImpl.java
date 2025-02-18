@@ -15,143 +15,118 @@ import util.DatabaseUtil;
 public class EmployeeDAOImpl implements EmployeeDAO {
 	@Override
 	public void addEmployee(Employee employee) {
-		if(getEmployeeByCode(employee.getCode()) != null) {
+		if (getEmployeeByCode(employee.getCode()) != null) {
 			throw new EmployeeException("Employee code already exits");
+		} else if (employee.getAge() < 1) {
+			throw new EmployeeException("Age must be >0");
 		}
-	    String query = "INSERT INTO Mt_employee (employee_code, employee_name, employee_age, date_of_birth) VALUES (?, ?, ?, ?)";
 
-	    try (Connection conn = DatabaseUtil.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(query)) {
+		String query = "INSERT INTO Mt_employee (employee_code, employee_name, employee_age, date_of_birth) VALUES (?, ?, ?, ?)";
 
-	        stmt.setString(1, employee.getCode());
-	        stmt.setString(2, employee.getName());
-	        stmt.setInt(3, employee.getAge());
-	        stmt.setDate(4, java.sql.Date.valueOf(employee.getDob()));
+		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
 
-	        int rowsAffected= stmt.executeUpdate();
-	        if (rowsAffected > 0) {
-	        	System.out.println("Employee with code, name "+ employee.getCode() + employee.getName() + " added successfully!");
-	        } else {
-	            throw new EmployeeException("Failed to add employee " + employee.getName());
-	        }
+			stmt.setString(1, employee.getCode());
+			stmt.setString(2, employee.getName());
+			stmt.setInt(3, employee.getAge());
+			stmt.setDate(4, java.sql.Date.valueOf(employee.getDob()));
 
-	    } catch (SQLException e) {
-	        throw new EmployeeException("Database error while adding employee: " + e.getMessage(), e);
-	    }
+			int rowsAffected = stmt.executeUpdate();
+			if (rowsAffected > 0) {
+				System.out.println("Employee with code, name " + employee.getCode() + " " + employee.getName()
+						+ "was added successfully!");
+			} else {
+				throw new EmployeeException("Failed to add employee " + employee.getName());
+			}
+
+		} catch (SQLException e) {
+			throw new EmployeeException("Database error while adding employee: " + e.getMessage(), e);
+		}
 	}
 
 	@Override
 	public void updateEmployee(Employee newEmployeeData) {
-	    String query = "UPDATE Mt_employee SET employee_name = ?, employee_age = ?, date_of_birth = ? WHERE employee_code = ?";
-	    
-	    try (Connection conn = DatabaseUtil.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(query)) {
-	        
-	        stmt.setString(1, newEmployeeData.getName());
-	        stmt.setInt(2, newEmployeeData.getAge());
-	        stmt.setDate(3, java.sql.Date.valueOf(newEmployeeData.getDob()));
-	        stmt.setString(4, newEmployeeData.getCode());
-	        
-	        int rowsAffected = stmt.executeUpdate();
-	        if (rowsAffected > 0) {
-	            System.out.println("Employee with code " + newEmployeeData.getCode() + " updated successfully!");
-	        } else {
-	            throw new EmployeeException("Failed to update employee with code " + newEmployeeData.getCode());
-	        }
-	        
-	    } catch (SQLException e) {
-	        throw new EmployeeException("Database error while updating employee: " + e.getMessage(), e);
-	    }
+		if (newEmployeeData.getAge() < 1) {
+			throw new EmployeeException("Age must be >0");
+		}
+		String query = "UPDATE Mt_employee SET employee_name = ?, employee_age = ?, date_of_birth = ? WHERE employee_code = ?";
+
+		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
+			stmt.setString(1, newEmployeeData.getName());
+			stmt.setInt(2, newEmployeeData.getAge());
+			stmt.setDate(3, java.sql.Date.valueOf(newEmployeeData.getDob()));
+			stmt.setString(4, newEmployeeData.getCode());
+
+			int rowsAffected = stmt.executeUpdate();
+			if (rowsAffected > 0) {
+				System.out.println("Employee with code, name" + newEmployeeData.getCode() + ", "
+						+ newEmployeeData.getName() + " was updated successfully!");
+			} else {
+				throw new EmployeeException("Failed to update employee with code " + newEmployeeData.getCode());
+			}
+
+		} catch (SQLException e) {
+			throw new EmployeeException("Database error while updating employee: " + e.getMessage(), e);
+		}
 	}
-	
-//	private Employee findEmployeeByCode(int code) {
-//	    String query = "SELECT * FROM Mt_employee WHERE employee_code = ?";
-//	    Employee employee = new Employee();
-//	    
-//	    try (Connection conn = DatabaseUtil.getConnection();
-//	         PreparedStatement stmt = conn.prepareStatement(query)) {
-//	        
-//	        stmt.setInt(1, code);
-//	        try (ResultSet rs = stmt.executeQuery()) {
-//	            if (rs.next()) {
-//	                employee.setCode(code);
-//	                employee.setAge(rs.getInt("employee_age"));
-//	                employee.setName(rs.getString("employee_name"));
-//	                employee.setDob(rs.getDate("date_of_birth").toLocalDate());
-//	            }
-//	        }
-//	    } catch (SQLException e) {
-//	        e.printStackTrace();
-//	    }
-//	    
-//	    return employee;
-//	}
 
 	@Override
 	public void deleteEmployee(String code) {
 		String query = "DELETE FROM Mt_employee WHERE employee_code = ?";
-		try(Connection conn = DatabaseUtil.getConnection();
-				PreparedStatement stmt = conn.prepareStatement(query)){
-			stmt.setString(1,  code);
+		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+			stmt.setString(1, code);
 			int rowsAffected = stmt.executeUpdate();
-			if(rowsAffected > 0) {
-				System.out.println("Employee with code "+ code + " was successfully deleted");
+			if (rowsAffected > 0) {
+				System.out.println("Employee with code " + code + " was successfully deleted");
 			} else {
-				throw new EmployeeException("Failed to delete employee "+ code);
+				throw new EmployeeException("Failed to delete employee " + code);
 			}
 		} catch (Exception e) {
-	        throw new EmployeeException("Database error while deleting employee: " + e.getMessage(), e);
+			throw new EmployeeException("Database error while deleting employee: " + e.getMessage(), e);
 		}
 	}
 
 	@Override
 	public List<Employee> getAllEmployees() {
-	    List<Employee> employeeList = new ArrayList<>();
-	    String query = "SELECT * FROM Mt_employee";
+		List<Employee> employeeList = new ArrayList<>();
+		String query = "SELECT * FROM Mt_employee";
 
-	    try (Connection conn = DatabaseUtil.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(query);
-	         ResultSet rs = stmt.executeQuery()) { 
-	        while (rs.next()) {
-	            employeeList.add(new Employee(
-	                rs.getString("employee_code"),
-	                rs.getString("employee_name"),
-	                rs.getInt("employee_age"),
-	                rs.getDate("date_of_birth").toLocalDate()
-	            ));
-	        }
+		try (Connection conn = DatabaseUtil.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(query);
+				ResultSet rs = stmt.executeQuery()) {
+			while (rs.next()) {
+				employeeList.add(new Employee(rs.getString("employee_code"), rs.getString("employee_name"),
+						rs.getInt("employee_age"), rs.getDate("date_of_birth").toLocalDate()));
+			}
 
-	    } catch (Exception e) {
-	        throw new EmployeeException("Database error while fetching employee: " + e.getMessage(), e);
-	    }
-	    return employeeList;
+		} catch (Exception e) {
+			throw new EmployeeException("Database error while fetching employee: " + e.getMessage(), e);
+		}
+		return employeeList;
 	}
-
 
 	@Override
 	public Employee getEmployeeByCode(String code) {
-	    String query = "SELECT * FROM Mt_employee WHERE employee_code = ?";
-	    Employee employee = null;
+		String query = "SELECT * FROM Mt_employee WHERE employee_code = ?";
+		Employee employee = null;
 
-	    try (Connection conn = DatabaseUtil.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(query)) {
-	        
-	        stmt.setString(1, code);
-	        try (ResultSet rs = stmt.executeQuery()) {
-	            if (rs.next()) {
-	                employee = new Employee(); 
-	                employee.setCode(code);
-	                employee.setAge(rs.getInt("employee_age"));
-	                employee.setName(rs.getString("employee_name"));
-	                employee.setDob(rs.getDate("date_of_birth").toLocalDate());
-	            }
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    
-	    return employee; 
+		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
+			stmt.setString(1, code);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					employee = new Employee();
+					employee.setCode(code);
+					employee.setAge(rs.getInt("employee_age"));
+					employee.setName(rs.getString("employee_name"));
+					employee.setDob(rs.getDate("date_of_birth").toLocalDate());
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return employee;
 	}
-
 
 }
