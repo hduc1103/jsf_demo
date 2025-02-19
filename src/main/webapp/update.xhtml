@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">  
+
+<h:head>
+    <title>Update Employee</title>
+</h:head>
+
+<h:body>
+    <h1>Update Employee</h1>
+    <h:messages globalOnly="true" style="color:red;" />
+    <h:form>
+        <h:panelGrid columns="2">
+            <h:outputLabel for="code" value="Code:" />
+            <h:inputText id="code" value="#{updateEmployeeBean.selectedEmployee.code}" readonly="true" />
+
+            <h:outputLabel for="name" value="Name:" />
+            <h:inputText id="name" value="#{updateEmployeeBean.selectedEmployee.name}" required="true" />
+
+            <h:outputLabel for="dob" value="Date of Birth:" />
+            <h:inputText id="dob" value="#{updateEmployeeBean.selectedEmployee.dob}" required="true">
+                <f:converter converterId="localDateConverter" />
+            </h:inputText>
+
+            <h:commandButton value="Update Employee" action="#{updateEmployeeBean.updateEmployee}" style ="cursor:pointer;" />
+        </h:panelGrid>
+    </h:form>
+
+    <h:form>
+        <h:commandButton value="Back to Employee List" action="index?faces-redirect=true" style ="cursor:pointer;"/>
+    </h:form>
+    <h:messages globalOnly="true" style="color:red;" />
+</h:body>
+
+</html>
