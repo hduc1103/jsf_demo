@@ -1,5 +1,7 @@
 package service.impl;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -19,6 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Override
 	public void addEmployee(Employee employee) {
+		employee.setAge(Period.between(employee.getDob(), LocalDate.now()).getYears());
 		employeeDAO.addEmployee(employee);	
 	}
 
@@ -34,6 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public void updateEmployee(Employee newEmployeeData) {
+		newEmployeeData.setAge(Period.between(newEmployeeData.getDob(), LocalDate.now()).getYears());
 		employeeDAO.updateEmployee(newEmployeeData);
 	}
 

@@ -18,9 +18,6 @@
             <h:outputLabel for="name" value="Name:" />
             <h:inputText id="name" value="#{updateEmployeeBean.selectedEmployee.name}" required="true" />
 
-            <h:outputLabel for="age" value="Age:" />
-            <h:inputText id="age" value="#{updateEmployeeBean.selectedEmployee.age}" required="true" />
-
             <h:outputLabel for="dob" value="Date of Birth:" />
             <h:inputText id="dob" value="#{updateEmployeeBean.selectedEmployee.dob}" required="true">
                 <f:converter converterId="localDateConverter" />

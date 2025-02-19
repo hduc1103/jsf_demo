@@ -2,7 +2,7 @@ package bean;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import model.Employee;
 import service.EmployeeService;
 
 @Named("updateEmployeeBean")
-@RequestScoped
+@SessionScoped
 public class UpdateEmployeeBean implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -28,9 +28,11 @@ public class UpdateEmployeeBean implements Serializable{
 	public void setSelectedEmployee(Employee selectedEmployee) {
 		this.selectedEmployee = selectedEmployee;
 	}
-	
+
+
 	public String updateEmployee() {
 		try {
+		
 		employeeService.updateEmployee(selectedEmployee);
 		return "index?faces-redirect=true";
 		}catch(EmployeeException e) {
