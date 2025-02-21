@@ -27,7 +27,7 @@ public class LocalDateConverter implements Converter<LocalDate> {
         if (value == null) {
             return "";
         }
-        
         return value.format(FORMATTER);
     }
 }
+

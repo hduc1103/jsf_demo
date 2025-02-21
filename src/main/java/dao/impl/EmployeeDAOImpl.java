@@ -45,9 +45,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
 	@Override
 	public void updateEmployee(Employee newEmployeeData) {
-		if (newEmployeeData.getAge() < 1) {
-			throw new EmployeeException("Age must be >0");
-		}
 		String query = "UPDATE Mt_employee SET employee_name = ?, employee_age = ?, date_of_birth = ? WHERE employee_code = ?";
 
 		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -111,6 +108,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		Employee employee = null;
 
 		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
 			stmt.setString(1, code);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {

@@ -7,83 +7,142 @@
 	<title>Employee List</title>
 </h:head>
 <h:body>
-	<h1>Employee List</h1>
-	<h:form id="employeeForm">
-		<h:dataTable id="employeeTable" value="#{employeeBean.employees}"
-			var="emp" border="3"
-			style="width: 100%; border-collapse: none; text-align: left;">
+	<h:panelGroup id="employeeList">
+		<h:form id="employeeForm"
+			rendered="#{!employeeBean.showAdd &amp;&amp; !employeeBean.showUpdate}">
+			<h1>Employee List</h1>
+			<h:dataTable id="employeeTable" value="#{employeeBean.employees}"
+				var="emp" border="3"
+				style="width: 100%; border-collapse: none; text-align: left;">
 
-			<h:column style="width: 10%;">
-				<f:facet name="header">
-					<h:outputText value="Employee Code"/>
-				</f:facet>
-				<h:outputText value="#{emp.code}" />
-			</h:column>
+				<h:column style="width: 10%;">
+					<f:facet name="header">
+						<h:outputText value="Employee Code" />
+					</f:facet>
+					<h:outputText value="#{emp.code}" />
+				</h:column>
 
-			<h:column style="width: 40%;">
-				<f:facet name="header">
-					<h:outputText value="Name" />
-				</f:facet>
-				<h:outputText value="#{emp.name}" />
-			</h:column>
+				<h:column style="width: 40%;">
+					<f:facet name="header">
+						<h:outputText value="Name" />
+					</f:facet>
+					<h:outputText value="#{emp.name}" />
+				</h:column>
 
-			<h:column style="width: 10%;">
-				<f:facet name="header">
-					<h:outputText value="Age" />
-				</f:facet>
-				<h:outputText value="#{emp.age}" />
-			</h:column>
+				<h:column style="width: 10%;">
+					<f:facet name="header">
+						<h:outputText value="Age" />
+					</f:facet>
+					<h:outputText value="#{emp.age}" />
+				</h:column>
 
-			<h:column style="width: 20%;">
-				<f:facet name="header">
-					<h:outputText value="Date of Birth" />
-				</f:facet>
-				<h:outputText value="#{emp.dob}" />
-			</h:column>
-			<h:column style="width: 10%;">
-				<h:commandButton value="Delete"
-					actionListener="#{employeeBean.deleteEmployee(emp.code)}"
-					 style="color: red;  width: 100%; padding: 5px; border: none;cursor: pointer;" />
-			</h:column>
-			<h:column style="width: 10%;">
-				<h:commandButton value="Update"
-					action="#{employeeBean.updateEmployee(emp)}" style="color: blue;  width: 100%; padding: 5px; border: none;cursor: pointer;" />
-			</h:column>
-		</h:dataTable>
-	</h:form>
+				<h:column style="width: 20%;">
+					<f:facet name="header">
+						<h:outputText value="Date of Birth" />
+					</f:facet>
+					<h:outputText value="#{emp.dob}" />
+				</h:column>
+				<h:column style="width: 10%;">
+					<h:commandButton value="Delete"
+						actionListener="#{employeeBean.deleteEmployee(emp.code)}"
+						style="color: red;  width: 100%; padding: 5px; border: none;cursor: pointer;" />
+				</h:column>
+				<h:column style="width: 10%;">
+					<h:commandButton value="Update"
+						actionListener="#{employeeBean.toggleUpdate(emp)}"
+						style="color: blue; width: 100%; padding: 5px; border: none;cursor: pointer;">
+						<f:ajax render="updateEmployeePanel employeeList" />
+					</h:commandButton>
 
-	<h:form>
-		<h:commandButton value="Sort by name"
-			actionListener="#{employeeBean.sortByName()}" style ="cursor:pointer;"/>
-		<h:commandButton value="Sort by age"
-			actionListener="#{employeeBean.sortByAge()}" style ="cursor:pointer;"/>
-		<h:commandButton value="Sort by date of birth"
-			actionListener="#{employeeBean.sortByDob()}" style ="cursor:pointer;"/>
-		<h:commandButton value = "Refresh" action ="#{employeeBean.refresh()}" style = "cursor:pointer;"/>
-	</h:form>
-	
-	<h2>Add New Employee</h2>
-	<h:form>
-		<h:panelGrid columns="2">
+				</h:column>
+			</h:dataTable>
+			<h:form>
+				<h:commandButton value="Sort by name"
+					actionListener="#{employeeBean.sortByName()}"
+					style="cursor:pointer;" />
+				<h:commandButton value="Sort by age"
+					actionListener="#{employeeBean.sortByAge()}"
+					style="cursor:pointer;" />
+				<h:commandButton value="Sort by date of birth"
+					actionListener="#{employeeBean.sortByDob()}"
+					style="cursor:pointer;" />
+				<h:commandButton value="Refresh"
+					actionListener="#{employeeBean.refresh()}" style="cursor:pointer;" />
+				<h:commandButton value="Add"
+					actionListener="#{employeeBean.toggleAdd()}" style="cursor:pointer">
+					<f:ajax render="addEmployeeForm" />
+				</h:commandButton>
+			</h:form>
+		</h:form>
 
-			<h:outputLabel for="code" value="Code:" />
-			<h:inputText id="code" value="#{employeeBean.newEmployee.code}"
-				required="true" />
+	</h:panelGroup>
+	<h:panelGroup id="addEmployeeForm" rendered="#{employeeBean.showAdd}">
+		<h2>Add New Employee</h2>
+		<h:form>
+			<h:panelGrid columns="2">
 
-			<h:outputLabel for="name" value="Name:" />
-			<h:inputText id="name" value="#{employeeBean.newEmployee.name}"
-				required="true" />
+				<h:outputLabel for="code" value="Code:" />
+				<h:inputText id="code" value="#{employeeBean.newEmployee.code}"
+					required="true" />
 
-			<h:outputLabel for="dob" value="Date of Birth:" />
-			<h:inputText id="dob" value="#{employeeBean.newEmployee.dob}"
-				required="true">
-				<f:converter converterId="localDateConverter" />
-			</h:inputText>
+				<h:outputLabel for="name" value="Name:" />
+				<h:inputText id="name" value="#{employeeBean.newEmployee.name}"
+					required="true" />
 
-			<h:commandButton value="Add Employee" actionListener="#{employeeBean.addEmployee}" style ="cursor:pointer;"/>
-		</h:panelGrid>
-	</h:form>
-<h:messages globalOnly="true" style="color:red;" />
+				<h:outputLabel for="dob" value="Date of Birth:" />
+				<h:inputText id="dob" value="#{employeeBean.newEmployee.dob}"
+					required="true">
+					<f:validator validatorId="dateValidator" />
+
+					<f:converter converterId="localDateConverter" />
+				</h:inputText>
+
+				<h:commandButton value="Add Employee"
+					actionListener="#{employeeBean.addEmployee}"
+					style="cursor:pointer;">
+					<f:ajax render="employeeForm employeeTable" />
+				</h:commandButton>
+
+				<h:commandButton value="Cancel" style="cursor:pointer;"
+					immediate="true">
+					<f:ajax listener="#{employeeBean.toggleAdd()}"
+						render="employeeForm employeeList" />
+				</h:commandButton>
+
+			</h:panelGrid>
+		</h:form>
+	</h:panelGroup>
+	<h:panelGroup id="updateEmployeePanel">
+		<h:panelGroup id="updateEmployeeForm" rendered="#{employeeBean.showUpdate}">
+			<h2>Update Employee with code #{employeeBean.curEmployee.code}</h2>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel for="name" value="Name:" />
+					<h:inputText id="name" value="#{employeeBean.curEmployee.name}"
+						required="true" />
+
+					<h:outputLabel for="dob" value="Date of Birth:" />
+					<h:inputText id="dob" value="#{employeeBean.curEmployee.dob}"
+						required="true">
+						<f:converter converterId="localDateConverter" />
+					</h:inputText>
+
+					<h:commandButton value="Update Employee"
+						action="#{employeeBean.updateEmployee}" style="cursor:pointer;">
+						<f:ajax render="employeeTable updateEmployeeForm" />
+					</h:commandButton>
+
+					<h:commandButton value="Cancel"
+						actionListener="#{employeeBean.cancelUpdate()}"
+						style="cursor:pointer;" immediate="true">
+						<f:ajax render="updateEmployeeForm employeeList" />
+					</h:commandButton>
+				</h:panelGrid>
+			</h:form>
+		</h:panelGroup>
+	</h:panelGroup>
+
+	<h:messages globalOnly="true" style="color:red;" />
 </h:body>
 
 </html>

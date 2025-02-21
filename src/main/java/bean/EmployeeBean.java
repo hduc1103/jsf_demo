@@ -24,12 +24,40 @@ public class EmployeeBean implements Serializable {
 	
 	private List<Employee> employees;
     private Employee newEmployee;
+    private Employee curEmployee;
     
+    
+    private boolean showAdd = false;
+    private boolean showUpdate = false;
+    
+    public boolean isShowUpdate(){
+    	return showUpdate;
+    }
+    public void setShowUpdate(boolean showUpdate) {
+    	this.showUpdate = showUpdate;
+    }
+    public boolean isShowAdd() {
+        return showAdd;
+    }
+
+    public void setShowAdd(boolean showAdd) {
+        this.showAdd = showAdd;
+    }
+
+    public void toggleAdd() {
+        showAdd = !showAdd;
+    }
+    
+    public void toggleUpdate(Employee employee) {
+    	curEmployee= employee;
+    	showUpdate= !showUpdate;
+    }
+    public void cancelUpdate() {
+    	showUpdate= !showUpdate;
+    }
     @Inject
     private EmployeeService employeeService;
     
-    @Inject	
-    private UpdateEmployeeBean updateEmployeeBean;
     
     @PostConstruct
     public void init() {
@@ -48,12 +76,19 @@ public class EmployeeBean implements Serializable {
     public void setNewEmployee(Employee newEmployee) {
         this.newEmployee = newEmployee;
     }
- 
+    public Employee getCurEmployee() {
+        return curEmployee;
+    }
+
+    public void setCurEmployee(Employee curEmployee) {
+        this.curEmployee = curEmployee;
+    }
     public void addEmployee() {
         try {
             employeeService.addEmployee(newEmployee);
-            employees = employeeService.getAllEmployees(); 
+            employees.add(newEmployee);
             newEmployee = new Employee(); 
+            showAdd = false;
         } catch (EmployeeException e) {
             FacesContext.getCurrentInstance().addMessage(null, 
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
@@ -69,9 +104,10 @@ public class EmployeeBean implements Serializable {
         employees = employeeService.getAllEmployees();
     }
     
-    public String updateEmployee(Employee curEmployee) { 
-    	updateEmployeeBean.setSelectedEmployee(curEmployee);
-    	return "update";
+    public void updateEmployee() { 
+    	employeeService.updateEmployee(curEmployee);
+    	curEmployee = new Employee();
+    	showUpdate = false;
     }
     
     public void sortByName() {
