@@ -1,7 +1,8 @@
 package service.impl;
 
-import java.time.LocalDate;
 import java.time.Period;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -15,14 +16,24 @@ import service.EmployeeService;
 @Named("employeeService")
 @ApplicationScoped
 public class EmployeeServiceImpl implements EmployeeService {
-	
+
 	@Inject
-    private EmployeeDAO employeeDAO;
-	
+	private EmployeeDAO employeeDAO;
+
 	@Override
 	public void addEmployee(Employee employee) {
-		employee.setAge(Period.between(employee.getDob(), LocalDate.now()).getYears());
-		employeeDAO.addEmployee(employee);	
+		Calendar now = Calendar.getInstance();
+		Calendar dob = Calendar.getInstance();
+		dob.setTime(employee.getDob());
+
+		int age = now.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+		if (now.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+			age--;
+		}
+
+		employee.setAge(age);
+		employeeDAO.addEmployee(employee);
 	}
 
 	@Override
@@ -37,7 +48,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public void updateEmployee(Employee newEmployeeData) {
-		newEmployeeData.setAge(Period.between(newEmployeeData.getDob(), LocalDate.now()).getYears());
+		Calendar now = Calendar.getInstance();
+		Calendar dob = Calendar.getInstance();
+		dob.setTime(newEmployeeData.getDob());
+
+		int age = now.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+		if (now.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+			age--;
+		}
+
+		newEmployeeData.setAge(age);
 		employeeDAO.updateEmployee(newEmployeeData);
 	}
 
@@ -48,4 +69,3 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 }
- 

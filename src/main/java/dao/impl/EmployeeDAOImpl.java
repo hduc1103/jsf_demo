@@ -28,12 +28,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			stmt.setString(1, employee.getCode());
 			stmt.setString(2, employee.getName());
 			stmt.setInt(3, employee.getAge());
-			stmt.setDate(4, java.sql.Date.valueOf(employee.getDob()));
+			stmt.setDate(4, new java.sql.Date(employee.getDob().getTime()));
 
 			int rowsAffected = stmt.executeUpdate();
 			if (rowsAffected > 0) {
 				System.out.println("Employee with code, name " + employee.getCode() + " " + employee.getName()
-						+ "was added successfully!");
+						+ " was added successfully!");
 			} else {
 				throw new EmployeeException("Failed to add employee " + employee.getName());
 			}
@@ -51,7 +51,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
 			stmt.setString(1, newEmployeeData.getName());
 			stmt.setInt(2, newEmployeeData.getAge());
-			stmt.setDate(3, java.sql.Date.valueOf(newEmployeeData.getDob()));
+			stmt.setDate(3, new java.sql.Date(newEmployeeData.getDob().getTime()));
 			stmt.setString(4, newEmployeeData.getCode());
 
 			int rowsAffected = stmt.executeUpdate();
@@ -93,7 +93,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 				ResultSet rs = stmt.executeQuery()) {
 			while (rs.next()) {
 				employeeList.add(new Employee(rs.getString("employee_code"), rs.getString("employee_name"),
-						rs.getInt("employee_age"), rs.getDate("date_of_birth").toLocalDate()));
+						rs.getInt("employee_age"), rs.getDate("date_of_birth")));
 			}
 
 		} catch (Exception e) {
@@ -116,7 +116,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 					employee.setCode(code);
 					employee.setAge(rs.getInt("employee_age"));
 					employee.setName(rs.getString("employee_name"));
-					employee.setDob(rs.getDate("date_of_birth").toLocalDate());
+					employee.setDob(rs.getDate("date_of_birth"));
 				}
 			}
 		} catch (SQLException e) {

@@ -1,14 +1,14 @@
 package model;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class Employee {
 	private String code;
 	private String name;
 	private int age;
-	private LocalDate dob;
+	private Date dob;
 
-	public Employee(String code, String name, int age, LocalDate dob) {
+	public Employee(String code, String name, int age, Date dob) {
 		super();
 		this.code = code;
 		this.name = name;
@@ -43,11 +43,11 @@ public class Employee {
 		this.age = age;
 	}
 
-	public LocalDate getDob() {
+	public Date getDob() {
 		return dob;
 	}
 
-	public void setDob(LocalDate dob) {
+	public void setDob(Date dob) {
 		this.dob = dob;
 	}
 
