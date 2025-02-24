@@ -1,8 +1,6 @@
 package service.impl;
 
-import java.time.Period;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;

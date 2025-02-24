@@ -14,5 +14,5 @@ public interface EmployeeDAO {
 	List<Employee> getAllEmployees();
 
 	Employee getEmployeeByCode(String code);
-	
+
 }

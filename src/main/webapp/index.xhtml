@@ -7,7 +7,7 @@
 	<title>Employee List</title>
 </h:head>
 <h:body>
-	<h:form id="employeeList">
+	<h:form>
 		<h:panelGroup rendered="#{employeeBean.showList}">
 			<h1>Employee List</h1>
 			<h:dataTable value="#{employeeBean.employees}" var="emp" border="3"
@@ -24,7 +24,7 @@
 					<f:facet name="header">
 						<h:outputText value="Name" />
 					</f:facet>
-					<h:outputText value="#{emp.name}" />
+					<h:outputText value="#{emp.name}" converter="nameConverter" />
 				</h:column>
 
 				<h:column style="width: 10%;">
@@ -38,20 +38,20 @@
 					<f:facet name="header">
 						<h:outputText value="Date of Birth" />
 					</f:facet>
-					<h:outputText value="#{emp.dob}" />
+					<h:outputText value="#{emp.dob}" converter="dateConverter"/>
 				</h:column>
 				<h:column style="width: 10%;">
 					<h:commandButton value="Delete"
 						actionListener="#{employeeBean.deleteEmployee(emp.code)}"
 						style="color: red;  width: 100%; padding: 5px; border: none;cursor: pointer;">
-						<f:ajax render="employeeList" />
+						<f:ajax render="@form" />
 					</h:commandButton>
 				</h:column>
 				<h:column style="width: 10%;">
 					<h:commandButton value="Update"
 						actionListener="#{employeeBean.toggleUpdate(emp)}"
 						style="color: blue; width: 100%; padding: 5px; border: none;cursor: pointer;">
-						<f:ajax render="updateEmployeeForm employeeList" />
+						<f:ajax render="@form"/>
 					</h:commandButton>
 
 				</h:column>
@@ -59,99 +59,93 @@
 			<h:commandButton value="Sort by name"
 				actionListener="#{employeeBean.sortByName()}"
 				style="cursor:pointer;">
-				<f:ajax render="employeeList" />
+				<f:ajax render="@form" />
 			</h:commandButton>
 			<h:commandButton value="Sort by age"
 				actionListener="#{employeeBean.sortByAge()}" style="cursor:pointer;">
-				<f:ajax render="employeeList" />
+				<f:ajax render="@form" />
 			</h:commandButton>
 			<h:commandButton value="Sort by date of birth"
 				actionListener="#{employeeBean.sortByDob()}" style="cursor:pointer;">
-				<f:ajax render="employeeList" />
+				<f:ajax render="@form" />
 			</h:commandButton>
 			<h:commandButton value="Refresh"
 				actionListener="#{employeeBean.refresh()}" style="cursor:pointer;">
-				<f:ajax render="employeeList" />
+				<f:ajax render="@form" />
 			</h:commandButton>
 			<h:commandButton value="Add"
 				actionListener="#{employeeBean.toggleAdd()}" style="cursor:pointer">
-				<f:ajax render="addEmployeeForm employeeList" />
+				<f:ajax render="@form" />
 			</h:commandButton>
 		</h:panelGroup>
-	</h:form>
 
-	<h:form id="addEmployeeForm">
 		<h:panelGroup rendered="#{employeeBean.showAdd}">
-
 			<h2>Add New Employee</h2>
 			<h:panelGrid columns="3">
-				<h:outputLabel for="code" value="Code:" />
-				<h:inputText id="code" value="#{employeeBean.newEmployee.code}"
-					required="true" validatorMessage="Code must be in format CODE001">
-					<f:validateRegex pattern="^CODE\d+$" />
+				<h:outputLabel for="addCode" value="Code:" />
+				<h:inputText id="addCode" value="#{employeeBean.newEmployee.code}"
+					required="true" >
 				</h:inputText>
-				<h:message for="code" style="color:red;" />
-				<h:outputLabel for="name" value="Name:" />
-				<h:inputText id="name" value="#{employeeBean.newEmployee.name}"
-					required="true"
-					validatorMessage="Name must contain two words, each starting with uppercase">
-					<f:validateRegex pattern="^[A-Z][a-z]+ [A-Z][a-z]+$" />
-				</h:inputText>
-				<h:message for="name" style="color:red;" />
+				<h:message for="addCode" style="color:red;" />
+				<h:outputLabel for="addName" value="Name:" />
+				<h:inputText id="addName" 
+             value="#{employeeBean.newEmployee.name}"
+             required="true"
+             converter="nameConverter"
+             validator="nameValidator">
+    <f:ajax event="blur" render="addName" />
+</h:inputText>
+<h:message for="addName" style="color:red;" />
 
-				<h:outputLabel for="dob" value="Date of Birth:" />
-				<h:inputText id="dob" value="#{employeeBean.newEmployee.dob}"
-					required="true">
-					<f:convertDateTime pattern="yyyy-MM-dd" />
+
+				<h:outputLabel for="addDob" value="Date of Birth:" />
+				<h:inputText id="addDob" value="#{employeeBean.newEmployee.dob}"
+					required="true" converter="dateConverter">
+					<f:ajax event="blur" render="addDob" /> 
 				</h:inputText>
-				<h:message for="dob" style="color:red;" />
+				<h:message for="addDob" style="color:red;" />
 				<h:commandButton value="Add Employee" style="cursor:pointer;"
 					actionListener="#{employeeBean.addEmployee}">
-					<f:ajax execute="@form" render="employeeList addEmployeeForm" />
+					<f:ajax render="@form" />
 				</h:commandButton>
 
 				<h:commandButton value="Cancel" style="cursor:pointer;"
 					immediate="true">
 					<f:ajax listener="#{employeeBean.cancelAdd()}"
-						render="addEmployeeForm employeeList" />
+						render="@form" />
 				</h:commandButton>
 
 			</h:panelGrid>
 		</h:panelGroup>
 		<h:messages globalOnly="true" style="color:red;" />
 
-	</h:form>
-
-	<h:form id="updateEmployeeForm">
 		<h:panelGroup rendered="#{employeeBean.showUpdate}">
 			<h2>Update Employee with code #{employeeBean.curEmployee.code}</h2>
 
 			<h:panelGrid columns="3">
-				<h:outputLabel for="name" value="Name:" />
-				<h:inputText id="name" value="#{employeeBean.curEmployee.name}"
-					required="true" validatorMessage="Code must be in format CODE001">
+				<h:outputLabel for="updateName" value="Name:" />
+				<h:inputText id="updateName" value="#{employeeBean.curEmployee.name}"
+					required="true" converter="nameConverter">
 					<f:validateRegex pattern="^[A-Z][a-z]+ [A-Z][a-z]+$" />
-					<f:attribute name="errorMessage"
-						value="Name must contain two words, each starting with uppercase" />
+					<f:ajax event="blur" render ="updateName"/>
 				</h:inputText>
-				<h:message for="name" style="color:red;" />
-				<h:outputLabel for="dob" value="Date of Birth:" />
-				<h:inputText id="dob" value="#{employeeBean.curEmployee.dob}"
-					required="true"
-					validatorMessage="Date of birth must be in format 2025-01-01">
+				<h:message for="updateName" style="color:red;" />
+				<h:outputLabel for="updateDob" value="Date of Birth:" />
+				<h:inputText id="updateDob" value="#{employeeBean.curEmployee.dob}"
+					required="true">
 					<f:convertDateTime pattern="yyyy-MM-dd" />
 				</h:inputText>
-				<h:message for="dob" style="color:red;" />
+				<h:message for="updateDob" style="color:red;" />
 				<h:commandButton value="Update Employee"
 					actionListener="#{employeeBean.updateEmployee}"
 					style="cursor:pointer;">
-					<f:ajax execute="@form" render="employeeList updateEmployeeForm" />
+					<f:ajax render="@form"/>
 				</h:commandButton>
 
 				<h:commandButton value="Cancel"
 					actionListener="#{employeeBean.cancelUpdate()}"
 					style="cursor:pointer;" immediate="true">
-					<f:ajax render="updateEmployeeForm employeeList" />
+					<f:ajax render="@form" />
 				</h:commandButton>
 			</h:panelGrid>
 		</h:panelGroup>
